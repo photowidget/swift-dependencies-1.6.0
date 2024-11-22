@@ -1,30 +1,31 @@
 {
+  "originHash" : "c45f4cc7198adb0152462ba4177457e21bff8310b88db692766a33436c11b249",
   "pins" : [
     {
-      "identity" : "combine-schedulers",
+      "identity" : "combine-schedulers-1.0.2",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/combine-schedulers",
+      "location" : "https://github.com/photowidget/combine-schedulers-1.0.2",
       "state" : {
-        "revision" : "9fa31f4403da54855f1e2aeaeff478f4f0e40b13",
-        "version" : "1.0.2"
+        "branch" : "release/1.0.2",
+        "revision" : "26acf4f8b6aed3e566f9522bc03df4ffcef0bb5a"
       }
     },
     {
-      "identity" : "swift-clocks",
+      "identity" : "swift-clocks-1.0.5",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-clocks",
+      "location" : "https://github.com/photowidget/swift-clocks-1.0.5",
       "state" : {
-        "revision" : "b9b24b69e2adda099a1fa381cda1eeec272d5b53",
-        "version" : "1.0.5"
+        "branch" : "release/1.0.5",
+        "revision" : "cf43a4101d339c1f453f879d7aabbcd0c6cdde04"
       }
     },
     {
-      "identity" : "swift-concurrency-extras",
+      "identity" : "swift-concurrency-extras-1.3.0",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-concurrency-extras",
+      "location" : "https://github.com/photowidget/swift-concurrency-extras-1.3.0",
       "state" : {
-        "revision" : "bb5059bde9022d69ac516803f4f227d8ac967f71",
-        "version" : "1.1.0"
+        "branch" : "release/1.3.0",
+        "revision" : "3ac5ec8f4ea1193e704733125720c8673963c334"
       }
     },
     {
@@ -82,5 +83,5 @@
       }
     }
   ],
-  "version" : 2
+  "version" : 3
 }

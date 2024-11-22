@@ -4,7 +4,7 @@
     {
       "identity" : "combine-schedulers",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/combine-schedulers",
+      "location" : "https://github.com/photowidget/combine-schedulers-1.0.2",
       "state" : {
         "revision" : "9fa31f4403da54855f1e2aeaeff478f4f0e40b13",
         "version" : "1.0.2"
@@ -13,7 +13,7 @@
     {
       "identity" : "swift-clocks",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-clocks",
+      "location" : "https://github.com/photowidget/swift-clocks-1.0.5",
       "state" : {
         "revision" : "b9b24b69e2adda099a1fa381cda1eeec272d5b53",
         "version" : "1.0.5"
@@ -22,7 +22,7 @@
     {
       "identity" : "swift-concurrency-extras",
       "kind" : "remoteSourceControl",
-      "location" : "https://github.com/pointfreeco/swift-concurrency-extras",
+      "location" : "https://github.com/photowidget/swift-concurrency-extras-1.3.0",
       "state" : {
         "revision" : "bb5059bde9022d69ac516803f4f227d8ac967f71",
         "version" : "1.1.0"
