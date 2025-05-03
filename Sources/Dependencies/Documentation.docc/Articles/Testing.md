@@ -139,7 +139,6 @@ For example, for a pure SwiftUI entry point you can do the following to keep you
 running during tests:
 
 ```swift
-import IssueReporting
 import SwiftUI
 
 @main

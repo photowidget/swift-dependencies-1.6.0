@@ -1,5 +1,4 @@
 import Foundation
-import IssueReporting
 
 #if os(Windows)
   import WinSDK
