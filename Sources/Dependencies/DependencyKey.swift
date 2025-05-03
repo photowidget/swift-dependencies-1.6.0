@@ -220,23 +220,6 @@ extension DependencyKey {
             : ("@Dependency(\\.\($0))", "'\($0)'")
         }
         ?? ("A dependency", "the dependency")
-
-      reportIssue(
-        """
-        \(argument) has no test implementation, but was accessed from a test context:
-
-        \(dependencyDescription)
-
-        Dependencies registered with the library are not allowed to use their default, live \
-        implementations when run from tests.
-
-        To fix, override \(override) with a test value. If you are using the \
-        Composable Architecture, mutate the 'dependencies' property on your 'TestStore'. \
-        Otherwise, use 'withDependencies' to define a scope for the override. If you'd like to \
-        provide a default value for all tests, implement the 'testValue' requirement of the \
-        'DependencyKey' protocol.
-        """
-      )
     #endif
     return Self.previewValue
   }

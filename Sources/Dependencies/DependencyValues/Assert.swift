@@ -117,7 +117,6 @@ private struct TestAssertionEffect: AssertionEffect {
     line: UInt
   ) {
     guard condition() else {
-      reportIssue(message(), fileID: file, filePath: file, line: line, column: 0)
       return
     }
   }

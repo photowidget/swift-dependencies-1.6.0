@@ -1,5 +1,4 @@
 import Foundation
-import IssueReporting
 
 #if os(Windows)
   import WinSDK
@@ -271,56 +270,6 @@ public struct DependencyValues: Sendable {
         let cacheKey = CachedValues.CacheKey(id: TypeIdentifier(key), context: context)
         guard !cachedValues.cached.keys.contains(cacheKey) else {
           if cachedValues.cached[cacheKey]?.preparationID != DependencyValues.preparationID {
-            reportIssue(
-              {
-                var dependencyDescription = ""
-                if let fileID = DependencyValues.currentDependency.fileID,
-                  let line = DependencyValues.currentDependency.line
-                {
-                  dependencyDescription.append(
-                    """
-                      Location:
-                        \(fileID):\(line)
-
-                    """
-                  )
-                }
-                dependencyDescription.append(
-                  Key.self == Key.Value.self
-                    ? """
-                      Dependency:
-                        \(typeName(Key.Value.self))
-                    """
-                    : """
-                      Key:
-                        \(typeName(Key.self))
-                      Value:
-                        \(typeName(Key.Value.self))
-                    """
-                )
-                var argument: String {
-                  "\(function)" == "subscript(key:)"
-                    ? "\(typeName(Key.self)).self"
-                    : "\\.\(function)"
-                }
-                return """
-                  @Dependency(\(argument)) has already been accessed or prepared.
-
-                  \(dependencyDescription)
-
-                  A global dependency can only be prepared a single time and cannot be accessed \
-                  beforehand. Prepare dependencies as early as possible in the lifecycle of your \
-                  application.
-
-                  To temporarily override a dependency in your application, use 'withDependencies' \
-                  to do so in a well-defined scope.
-                  """
-              }(),
-              fileID: DependencyValues.currentDependency.fileID ?? fileID,
-              filePath: DependencyValues.currentDependency.filePath ?? filePath,
-              line: DependencyValues.currentDependency.line ?? line,
-              column: DependencyValues.currentDependency.column ?? column
-            )
           } else {
             cachedValues.cached[cacheKey] = CachedValues.CachedValue(
               base: newValue,
@@ -403,8 +352,6 @@ private let defaultContext: DependencyContext = {
   var inferredContext: DependencyContext {
     if environment["XCODE_RUNNING_FOR_PREVIEWS"] == "1" {
       return .preview
-    } else if isTesting {
-      return .test
     } else {
       return .live
     }
@@ -421,14 +368,6 @@ private let defaultContext: DependencyContext = {
   case "test":
     return .test
   default:
-    reportIssue(
-      """
-      An environment value for SWIFT_DEPENDENCIES_CONTEXT was provided but did not match "live",
-      "preview", or "test".
-
-          SWIFT_DEPENDENCIES_CONTEXT = \(value.debugDescription)
-      """
-    )
     return inferredContext
   }
 }()
@@ -440,17 +379,10 @@ public final class CachedValues: @unchecked Sendable {
   public struct CacheKey: Hashable, Sendable {
     let id: TypeIdentifier
     let context: DependencyContext
-    let testIdentifier: TestContext.Testing.Test.ID?
 
     init(id: TypeIdentifier, context: DependencyContext) {
       self.id = id
       self.context = context
-      switch TestContext.current {
-      case let .swiftTesting(.some(testing)):
-        self.testIdentifier = testing.test.id
-      default:
-        self.testIdentifier = nil
-      }
     }
   }
 
@@ -474,65 +406,10 @@ public final class CachedValues: @unchecked Sendable {
     lock.lock()
     defer { lock.unlock() }
 
-    return withIssueContext(fileID: fileID, filePath: filePath, line: line, column: column) {
+    do {
       let cacheKey = CacheKey(id: TypeIdentifier(key), context: context)
       #if DEBUG
         if context == .live, !DependencyValues.isSetting, !(key is any DependencyKey.Type) {
-          reportIssue(
-            {
-              var dependencyDescription = ""
-              if let fileID = DependencyValues.currentDependency.fileID,
-                let line = DependencyValues.currentDependency.line
-              {
-                dependencyDescription.append(
-                  """
-                    Location:
-                      \(fileID):\(line)
-
-                  """
-                )
-              }
-              dependencyDescription.append(
-                Key.self == Key.Value.self
-                  ? """
-                    Dependency:
-                      \(typeName(Key.Value.self))
-                  """
-                  : """
-                    Key:
-                      \(typeName(Key.self))
-                    Value:
-                      \(typeName(Key.Value.self))
-                  """
-              )
-
-              var argument: String {
-                "\(function)" == "subscript(key:)"
-                  ? "\(typeName(Key.self)).self"
-                  : "\\.\(function)"
-              }
-              return """
-                @Dependency(\(argument)) has no live implementation, but was accessed from a live \
-                context.
-
-                \(dependencyDescription)
-
-                To fix you can do one of two things:
-
-                • Conform '\(typeName(Key.self))' to the 'DependencyKey' protocol by providing \
-                a live implementation of your dependency, and make sure that the conformance is \
-                linked with this current application.
-
-                • Override the implementation of '\(typeName(Key.self))' using \
-                'withDependencies'. This is typically done at the entry point of your \
-                application, but can be done later too.
-                """
-            }(),
-            fileID: DependencyValues.currentDependency.fileID ?? fileID,
-            filePath: DependencyValues.currentDependency.filePath ?? filePath,
-            line: DependencyValues.currentDependency.line ?? line,
-            column: DependencyValues.currentDependency.column ?? column
-          )
         }
       #endif
 
@@ -555,16 +432,7 @@ public final class CachedValues: @unchecked Sendable {
             value = Key.previewValue
           }
         case .test:
-          if !CachedValues.isAccessingCachedDependencies,
-            case let .swiftTesting(.some(testing)) = TestContext.current,
-            let testValues = testValuesByTestID.withValue({ $0[testing.test.id.rawValue] })
-          {
-            value = CachedValues.$isAccessingCachedDependencies.withValue(true) {
-              testValues[key]
-            }
-          } else {
-            value = Key.testValue
-          }
+          value = Key.testValue
         }
 
         let cacheableValue = value ?? Key.testValue

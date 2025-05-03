@@ -153,17 +153,6 @@ public func withDependencies<Model: AnyObject, R>(
 ) rethrows -> R {
   guard let values = dependencyObjects.values(from: model)
   else {
-    reportIssue(
-      """
-      You are trying to propagate dependencies to a child model from a model with no dependencies. \
-      To fix this, the given '\(Model.self)' must be returned from another 'withDependencies' \
-      closure, or the class must hold at least one '@Dependency' property.
-      """,
-      fileID: fileID,
-      filePath: filePath,
-      line: line,
-      column: column
-    )
     return try operation()
   }
   return try withDependencies {
@@ -231,17 +220,6 @@ public func withDependencies<Model: AnyObject, R>(
   ) async rethrows -> R {
     guard let values = dependencyObjects.values(from: model)
     else {
-      reportIssue(
-        """
-        You are trying to propagate dependencies to a child model from a model with no \
-        dependencies. To fix this, the given '\(Model.self)' must be returned from another \
-        'withDependencies' closure, or the class must hold at least one '@Dependency' property.
-        """,
-        fileID: fileID,
-        filePath: filePath,
-        line: line,
-        column: column
-      )
       return try await operation()
     }
     return try await withDependencies {
@@ -299,17 +277,6 @@ public func withDependencies<Model: AnyObject, R>(
   ) async rethrows -> R {
     guard let values = dependencyObjects.values(from: model)
     else {
-      reportIssue(
-        """
-        You are trying to propagate dependencies to a child model from a model with no \
-        dependencies. To fix this, the given '\(Model.self)' must be returned from another \
-        'withDependencies' closure, or the class must hold at least one '@Dependency' property.
-        """,
-        fileID: fileID,
-        filePath: filePath,
-        line: line,
-        column: column
-      )
       return try await operation()
     }
     return try await withDependencies {

@@ -1,4 +1,3 @@
-import IssueReporting
 import XCTest
 
 #if !_runtime(_ObjC)

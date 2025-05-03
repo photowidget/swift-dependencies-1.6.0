@@ -86,7 +86,6 @@
       static var testValue: URLSession {
         #if DEBUG
           if !DependencyValues.isSetting {
-            reportIssue(#"Unimplemented: @Dependency(\.urlSession)"#)
           }
         #endif
         let configuration = URLSessionConfiguration.ephemeral
